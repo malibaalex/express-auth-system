@@ -1,0 +1,70 @@
+model User {
+    userId        String   @id @default(uuid()) @map("user_id")
+    email         String   @unique
+    password      String? // Nullable for OAuth-only users (Argon2 handles salt internally)
+    emailVerified Boolean  @default(false) @map("email_verified")
+    status        Boolean  @default(true)
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+
+    profile       UserProfile? // Dedicated profile relation for metadata
+    providers     Provider[] // Extensible OAuth providers (Google, GitHub, etc.)
+    refreshTokens RefreshToken[] // App's native session refresh tokens
+    otps          EmailOtp[] // Numeric OTP verification tracking
+
+    @@map("users")
+}
+
+model UserProfile {
+    userProfileId String   @id @default(uuid()) @map("user_profile_id")
+    userId        String   @unique @map("user_id") // One-to-one link to User
+    user          User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    fullName      String?  @map("full_name") // Populated from Google OAuth or signup metadata
+    avatarUrl     String?  @map("avatar_url") // Populated from Google profile picture
+    createdAt     DateTime @default(now()) @map("created_at")
+    updatedAt     DateTime @updatedAt @map("updated_at")
+
+    @@map("user_profiles")
+}
+
+model Provider {
+    id                String   @id @default(uuid())
+    userId            String   @map("user_id")
+    user              User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    providerName      String   @map("provider_name") // e.g., "google", "github", "apple"
+    providerAccountId String   @map("provider_account_id") // Unique ID from provider (e.g., Google 'sub')
+    email             String? // Associated email from provider
+    accessToken       String?  @map("access_token")
+    refreshToken      String?  @map("refresh_token")
+    createdAt         DateTime @default(now()) @map("created_at")
+    updatedAt         DateTime @updatedAt @map("updated_at")
+
+    @@unique([providerName, providerAccountId])
+    @@index([userId])
+    @@map("providers")
+}
+
+model EmailOtp {
+    id        String   @id @default(uuid())
+    userId    String   @map("user_id")
+    user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    codeHash  String   @map("code_hash")
+    attempts  Int      @default(0) // CHANGED: brute-force protection
+    expiresAt DateTime @map("expires_at")
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@index([userId])
+    @@map("email_otps")
+}
+
+model RefreshToken {
+    id        String   @id @default(uuid())
+    tokenHash String   @unique @map("token_hash") // CHANGED: store a hash, not the raw token
+    userId    String   @map("user_id")
+    user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    expiresAt DateTime @map("expires_at")
+    createdAt DateTime @default(now()) @map("created_at")
+
+    @@index([userId])
+    @@map("refresh_tokens")
+}
