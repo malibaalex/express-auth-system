@@ -1,3 +1,17 @@
+import type { Prisma } from "@/generated/prisma/client.js"
+
+export type UserWithProfile = Prisma.UserGetPayload<{
+  include: { profile: true }
+}>
+
+export type ProviderWithUser = Prisma.ProviderGetPayload<{
+  include: { user: { include: { profile: true } } }
+}>
+
+export type RefreshTokenWithUser = Prisma.RefreshTokenGetPayload<{
+  include: { user: { include: { profile: true } } }
+}>
+
 export type AccessTokenData = {
   userId: string
   email: string

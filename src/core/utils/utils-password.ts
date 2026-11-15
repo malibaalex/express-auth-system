@@ -4,7 +4,10 @@ import { promisify } from "node:util"
 const argon2Async = promisify(nativeArgon2)
 
 export class PasswordUtil {
+<<<<<<< HEAD
   private dummyHash: Promise<string> | null = null
+=======
+>>>>>>> 13f8006 (feat(auth): add data-access services)
 
   /**
 - Hashes a password using native Node.js Argon2id.
@@ -70,6 +73,7 @@ export class PasswordUtil {
     }
   }
 
+<<<<<<< HEAD
   /**
 - Same argument order as verify(): (storedHash, plainText).
    */
@@ -85,4 +89,6 @@ export class PasswordUtil {
     )
     return storedHash ? ok : false
   }
+=======
+>>>>>>> 13f8006 (feat(auth): add data-access services)
 }

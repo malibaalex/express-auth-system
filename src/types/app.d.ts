@@ -1,6 +1,6 @@
 import "pino-http"
 import { NextFunction, Request, Response, Router } from "express"
-import { User } from "@/generated/prisma/client.ts"
+import { UserWithProfile } from "./user.js"
 
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete"
 
@@ -29,7 +29,7 @@ export interface RateLimitOptions {
 declare global {
   namespace Express {
     interface Request {
-      currentUser?: User
+      currentUser?: UserWithProfile
     }
   }
 }
