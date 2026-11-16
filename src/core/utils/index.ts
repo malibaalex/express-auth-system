@@ -7,22 +7,17 @@ import TokenUtils from "./utils-token.js"
 import RateLimitUtils from "./utils-rate-limit.js"
 import OtpHasherUtil from "./utils-otp.js"
 import MailerUtil from "./utils-mailer.js"
-
-const Token = new TokenUtils(env)
-const Cookie = new CookieUtils(env)
-const Password = new PasswordUtil()
-const RateLimits = new RateLimitUtils()
-const OtpHasher = new OtpHasherUtil()
-const Mailer = new MailerUtil()
+import AccessUtils from "./utils-access.js"
 
 export const Utils = {
   port,
   OmitProperty,
-  Password,
-  Token,
-  Cookie,
+  Password: new PasswordUtil(),
+  Token: new TokenUtils(env),
+  Cookie: new CookieUtils(env),
   env,
-  RateLimits,
-  OtpHasher,
-  Mailer,
+  RateLimits: new RateLimitUtils(),
+  OtpHasher: new OtpHasherUtil(),
+  Mailer: new MailerUtil(),
+  Access: new AccessUtils(),
 } as const
