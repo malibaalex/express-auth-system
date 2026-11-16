@@ -16,6 +16,7 @@ model User {
     providers     Provider[] // Extensible OAuth providers (Google, GitHub, etc.)
     refreshTokens RefreshToken[] // App's native session refresh tokens
     otps          EmailOtp[] // Numeric OTP verification tracking
+    userRoles     UserRole[]
 
     @@map("users")
 }

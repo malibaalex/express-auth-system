@@ -3,7 +3,7 @@ import type { UserWithProfile } from "@/types/user.js"
 
 export interface CreateUserInput {
   email: string
-  password: string | null 
+  password: string | null
   emailVerified?: boolean
   fullName?: string | null
   avatarUrl?: string | null

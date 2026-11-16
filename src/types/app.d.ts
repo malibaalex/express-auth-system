@@ -1,6 +1,6 @@
 import "pino-http"
 import { NextFunction, Request, Response, Router } from "express"
-import { UserWithProfile } from "./user.js"
+import { Access, UserWithProfile } from "./user.js"
 
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete"
 
@@ -30,6 +30,7 @@ declare global {
   namespace Express {
     interface Request {
       currentUser?: UserWithProfile
+      access?: Access
     }
   }
 }

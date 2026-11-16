@@ -42,7 +42,15 @@ class SignInController extends BaseAuthController {
       return
     }
 
-    this.respond(res, "SUCCESS", { data: { user: this.publicUser(user) } })
+    const access = await this.loadAccess(user) // verify: use `verified`
+    if (!access) {
+      this.respond(res, "SERVER_ERROR")
+      return
+    }
+
+    this.respond(res, "SUCCESS", {
+      data: { user: this.publicUser(user, access) },
+    })
   }
 }
 

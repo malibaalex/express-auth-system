@@ -12,6 +12,17 @@ export type RefreshTokenWithUser = Prisma.RefreshTokenGetPayload<{
   include: { user: { include: { profile: true } } }
 }>
 
+export type UserRoleWithAccess = Prisma.UserRoleGetPayload<{
+  include: {
+    role: { include: { rolePermissions: { include: { permission: true } } } }
+  }
+}>
+
+export type Access = {
+  roles: string[]
+  permissions: string[]
+}
+
 export type AccessTokenData = {
   userId: string
   email: string

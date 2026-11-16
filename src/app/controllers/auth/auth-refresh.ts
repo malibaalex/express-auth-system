@@ -48,8 +48,10 @@ class RefreshTokenController extends BaseAuthController {
 
     const newToken = Token.signRefresh({ userId: stored.userId })
 
+    const access = await this.loadAccess(user)
+    if (!access) return reject()
+
     // Atomic: delete the old row and insert the new one together.
-    // null means another request already claimed the old token.
     const rotate = await Auth.RefreshToken.Rotate.call({
       userId: stored.userId,
       oldTokenHash,
@@ -61,7 +63,7 @@ class RefreshTokenController extends BaseAuthController {
     Cookie.setRefreshCookie(res, newToken)
 
     this.respond(res, "SUCCESS", {
-      data: { user: this.publicUser(user) },
+      data: { user: this.publicUser(user, access) },
     })
   }
 }

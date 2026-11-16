@@ -1,4 +1,5 @@
 import LogoutRoute from "./auth-logout.js"
+import MeRoute from "./auth-me.js"
 import RefreshTokenRoute from "./auth-refresh-token.js"
 import Email from "./email/index.js"
 import Password from "./password/index.js"
@@ -15,6 +16,7 @@ const Auth = {
   PasswordReset: Password.Reset,
   RefreshToken: new RefreshTokenRoute(path),
   LogOut: new LogoutRoute(path),
+  Me: new MeRoute(path),
 }
 
 export default Auth

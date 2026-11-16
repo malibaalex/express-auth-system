@@ -1,10 +1,10 @@
 import { randomBytes } from "node:crypto"
 import { Request, Response } from "express"
 import passport from "passport"
-import BaseControlller from "@/core/base/base-controller.js"
 import Strategies from "@/core/strategie/index.js"
+import BaseAuthController from "@/core/base/controller/base-auth-controller.js"
 
-class GoogleRedirectController extends BaseControlller {
+class GoogleRedirectController extends BaseAuthController {
   protected async module(req: Request, res: Response): Promise<void> {
     const state = randomBytes(32).toString("base64url")
     this.Utils.Cookie.setStateCookie(res, state)
