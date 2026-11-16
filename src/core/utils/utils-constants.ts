@@ -34,4 +34,10 @@ export const HTTP_MSG = {
   ALREADY_EXISTS: "already exists",
 } as const
 
+export const OTP = {
+  TTL_MS: 10 * 60 * 1000,
+  RESEND_COOLDOWN_MS: 60 * 1000,
+  MAX_ATTEMPTS: 5,
+} as const
+
 export type ResponseKey = keyof typeof HTTP_STATUS & keyof typeof HTTP_MSG

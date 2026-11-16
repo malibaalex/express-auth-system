@@ -1,5 +1,6 @@
 import { Resend } from "resend"
 import { env } from "@/core/utils/utils-env.js"
+import logger from "@/core/utils/utils-logger.js"
 
 class MailerUtil {
   private resend: Resend
@@ -9,8 +10,8 @@ class MailerUtil {
   }
 
   /**
-   * Dispatches an OTP email for either account verification or password resets.
-   * Throws an error if the Resend API returns a delivery failure.
+- Dispatches an OTP email for either account verification or password resets.
+- Throws an error if the Resend API returns a delivery failure.
    */
   public async sendOtpEmail(
     email: string,
@@ -79,7 +80,7 @@ class MailerUtil {
       If you didn't request this, you can safely ignore this email.
     `
 
-    const { data, error } = await this.resend.emails.send({
+    const { error } = await this.resend.emails.send({
       from: env.EMAIL_FROM,
       to: [email],
       subject,
@@ -88,12 +89,9 @@ class MailerUtil {
     })
 
     if (error) {
-      console.error("Error sending email:", error)
+      logger.error({ err: error }, "Resend email delivery failed")
       throw new Error(`Failed to send email: ${error.message}`)
     }
-
-    console.log("Email sent successfully!")
-    console.log("Email ID:", data?.id)
   }
 }
 

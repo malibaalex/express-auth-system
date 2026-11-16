@@ -1,17 +1,14 @@
 import { Request, Response } from "express"
 import passport from "passport"
-import BaseControlller from "@/core/base/base-controller.js"
 import Strategies from "@/core/strategie/index.js"
 import { GoogleAuthProfile } from "@/core/strategie/strategy-google.js"
 import type { UserWithProfile } from "@/types/user.js"
+import BaseAuthController from "@/core/base/controller/base-auth-controller.js"
 
 const PROVIDER = "google"
 
-class GoogleCallbackController extends BaseControlller {
+class GoogleCallbackController extends BaseAuthController {
   protected async module(req: Request, res: Response): Promise<void> {
-    const { Auth } = this.Services
-    const { Token, Cookie, env } = this.Utils
-
     // The user pressed "Cancel" on Google's consent screen
     if (typeof req.query.error === "string") {
       this.respond(res, "UNAUTHORIZED", { message: "google sign-in cancelled" })
@@ -43,29 +40,11 @@ class GoogleCallbackController extends BaseControlller {
       return
     }
 
-    const accessToken = Token.signAccess({
-      payload: {
-        userId: user.userId,
-        email: user.email,
-        fullName: user.profile?.fullName ?? null,
-        status: user.status,
-        emailVerified: user.emailVerified,
-      },
-    })
-    const refreshToken = Token.signRefresh({ userId: user.userId })
-
-    const saved = await Auth.RefreshToken.Save.call({
-      userId: user.userId,
-      token: Token.hashRefresh(refreshToken),
-    })
-    if (!saved) {
+    if (!(await this.issueSession(res, user))) {
       this.respond(res, "SERVER_ERROR")
       return
     }
-
-    Cookie.setAccessCookie(res, accessToken)
-    Cookie.setRefreshCookie(res, refreshToken)
-    res.redirect(env.APP_URL)
+    res.redirect(this.Utils.env.APP_URL)
   }
 
   /**
