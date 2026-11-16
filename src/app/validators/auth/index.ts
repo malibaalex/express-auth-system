@@ -1,9 +1,13 @@
 import GoogleCallbackValidator from "./auth-google-callback.js"
-
-const GoogleCallback = new GoogleCallbackValidator()
+import SignInValidator from "./auth-sign-in.js"
+import SignUpValidator from "./auth-sign-up.js"
+import Otp from "./otp/index.js"
 
 const Auth = {
-  GoogleCallback,
+  GoogleCallback: new GoogleCallbackValidator(),
+  SignIn: new SignInValidator(),
+  SignUp: new SignUpValidator(),
+  Otp,
 }
 
 export default Auth
