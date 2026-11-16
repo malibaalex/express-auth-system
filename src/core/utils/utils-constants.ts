@@ -3,12 +3,6 @@
  */
 export const PORT = "4001"
 
-export const ROLES = {
-  CUSTOMER: "customer",
-  VENDOR: "vendor",
-  ADMIN: "admin",
-} as const
-
 export const HTTP_STATUS = {
   SUCCESS: 200,
   CREATED: 201,
@@ -40,5 +34,4 @@ export const HTTP_MSG = {
   ALREADY_EXISTS: "already exists",
 } as const
 
-export type RoleName = (typeof ROLES)[keyof typeof ROLES]
 export type ResponseKey = keyof typeof HTTP_STATUS & keyof typeof HTTP_MSG

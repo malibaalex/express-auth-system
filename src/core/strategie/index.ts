@@ -1,5 +1,5 @@
 import passport from "passport"
-import GoogleStrategy from "./strategie-google.js"
+import GoogleStrategy from "./strategy-google.js"
 
 const Google = new GoogleStrategy()
 

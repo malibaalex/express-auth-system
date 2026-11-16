@@ -36,14 +36,8 @@ class RateLimitUtils {
         keyGenerator ??
         ((req: Request) => {
           const ip = req.ip ?? "unknown"
-          const userId =
-            req.currentUser && "id" in req.currentUser
-              ? (req.currentUser.id as string)
-              : undefined
-          const email =
-            req.currentUser && "email" in req.currentUser
-              ? (req.currentUser.email as string)
-              : req.body?.email
+          const userId = req.currentUser?.userId
+          const email = req.currentUser?.email ?? req.body?.email
 
           const identifier = email ?? userId
 
