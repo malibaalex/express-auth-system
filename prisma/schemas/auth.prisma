@@ -1,3 +1,8 @@
+enum OtpPurpose {
+    VERIFY_EMAIL
+    PASSWORD_RESET
+}
+
 model User {
     userId        String   @id @default(uuid()) @map("user_id")
     email         String   @unique
@@ -45,15 +50,16 @@ model Provider {
 }
 
 model EmailOtp {
-    id        String   @id @default(uuid())
-    userId    String   @map("user_id")
-    user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
-    codeHash  String   @map("code_hash")
-    attempts  Int      @default(0) // CHANGED: brute-force protection
-    expiresAt DateTime @map("expires_at")
-    createdAt DateTime @default(now()) @map("created_at")
+    id        String     @id @default(uuid())
+    userId    String     @map("user_id")
+    user      User       @relation(fields: [userId], references: [userId], onDelete: Cascade)
+    purpose   OtpPurpose @default(VERIFY_EMAIL)
+    codeHash  String     @map("code_hash")
+    attempts  Int        @default(0)
+    expiresAt DateTime   @map("expires_at")
+    createdAt DateTime   @default(now()) @map("created_at")
 
-    @@index([userId])
+    @@index([userId, purpose])
     @@map("email_otps")
 }
 
