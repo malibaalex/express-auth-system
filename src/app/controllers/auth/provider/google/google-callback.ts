@@ -94,7 +94,7 @@ class GoogleCallbackController extends BaseAuthController {
 
     // Brand new user
     if (!existing) {
-      return await User.Create.call({
+      const newUser = await User.Create.call({
         email: google.email,
         password: null,
         emailVerified: true,
@@ -102,6 +102,8 @@ class GoogleCallbackController extends BaseAuthController {
         avatarUrl: google.avatarUrl,
         provider: { ...identity, email: google.email },
       })
+      if (newUser) await this.assignDefaultRole(newUser)
+      return newUser
     }
 
     // Email already registered: link Google to it

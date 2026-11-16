@@ -4,7 +4,7 @@ import type { UserWithProfile } from "@/types/user.js"
 export interface UpdateUserInput {
   userId: string
   data: {
-    password?: string | null 
+    password?: string | null
     emailVerified?: boolean
     status?: boolean
   }

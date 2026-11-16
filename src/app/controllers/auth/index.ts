@@ -1,4 +1,5 @@
 import LogoutController from "./auth-logout.js"
+import MeController from "./auth-me.js"
 import RefreshTokenController from "./auth-refresh.js"
 import Email from "./email/index.js"
 import Otp from "./otp/index.js"
@@ -12,6 +13,7 @@ const Auth = {
   Password,
   RefreshToken: new RefreshTokenController(),
   Logout: new LogoutController(),
+  Me: new MeController(),
 }
 
 export default Auth

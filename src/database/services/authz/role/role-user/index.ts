@@ -3,7 +3,7 @@ import FindUserRolesByUserIdService from "./role-user-find-by-user-id.js"
 
 const User = {
   Assign: new AssignUserRoleService(),
-  FindByUser: new FindUserRolesByUserIdService(),
+  FindByUserId: new FindUserRolesByUserIdService(),
 }
 
 export default User

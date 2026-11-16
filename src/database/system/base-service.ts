@@ -2,7 +2,6 @@ import { prisma } from "./db.js"
 import { Page, Pagination } from "@/types/db.js"
 import logger from "@/core/utils/utils-logger.js"
 
-
 abstract class BaseService<TData = unknown, TResult = unknown> {
   protected database = prisma
 

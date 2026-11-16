@@ -21,12 +21,13 @@ class SignUpController extends BaseAuthController {
       emailVerified: false, // pending until the OTP is verified
       fullName: fullName ?? null,
     })
+    if (user) await this.assignDefaultRole(user)
     if (!user) {
       this.respond(res, "SERVER_ERROR")
       return
     }
 
-    if ((await this.sendOtp(user)) !== "SENT") {
+    if ((await this.sendOtp(user, "VERIFY_EMAIL")) !== "SENT") {
       this.respond(res, "SERVER_ERROR", {
         message:
           "account created but the code could not be sent, request a new one",

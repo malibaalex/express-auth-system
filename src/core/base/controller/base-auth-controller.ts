@@ -2,22 +2,51 @@ import { randomInt } from "node:crypto"
 import { Response } from "express"
 import BaseControlller from "./base-controller.js"
 import logger from "@/core/utils/utils-logger.js"
-import { OTP } from "@/core/utils/utils-constants.js"
-import type { UserWithProfile } from "@/types/user.js"
+import { OTP, ROLES } from "@/core/utils/utils-constants.js"
+import type { Access, UserWithProfile } from "@/types/user.js"
 import { OtpPurpose } from "@/generated/prisma/enums.js"
 
 export type SendOtpResult = "SENT" | "TOO_SOON" | "FAILED"
 
 abstract class BaseAuthController extends BaseControlller {
   /** Safe user shape for responses (never includes the password hash). */
-  protected publicUser(user: UserWithProfile) {
+  protected publicUser(user: UserWithProfile, access: Access) {
     return {
       userId: user.userId,
       email: user.email,
       fullName: user.profile?.fullName ?? null,
       avatarUrl: user.profile?.avatarUrl ?? null,
       emailVerified: user.emailVerified,
+      roles: access.roles,
+      permissions: access.permissions,
     }
+  }
+
+  protected async loadAccess(user: UserWithProfile): Promise<Access | null> {
+    const userRoles = await this.Services.Authz.Role.User.FindByUserId.call({
+      userId: user.userId,
+    })
+    return userRoles ? this.Utils.Access.from(userRoles) : null
+  }
+
+  /**
+   * Gives a new user the USER role. A missing role (seed not run) or a DB
+   * failure is logged but doesn't fail signup. The user simply has no
+   * permissions, which is the safe default, and the seed can backfill.
+   */
+  protected async assignDefaultRole(user: UserWithProfile): Promise<void> {
+    const { Authz } = this.Services
+
+    const role = await Authz.Role.FindByName.call({ name: ROLES.USER })
+    if (!role) {
+      logger.error(
+        { userId: user.userId },
+        "Default role missing, run the seed",
+      )
+      return
+    }
+
+    await Authz.Role.User.Assign.call({ userId: user.userId, roleId: role.id })
   }
 
   /** Signs an access token for a user. */

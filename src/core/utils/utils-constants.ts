@@ -40,4 +40,11 @@ export const OTP = {
   MAX_ATTEMPTS: 5,
 } as const
 
+export const ROLES = { ADMIN: "ADMIN", USER: "USER" } as const
+
+export const PERMISSIONS = {
+  USERS_READ: "users:read",
+  USERS_WRITE: "users:write",
+} as const
+
 export type ResponseKey = keyof typeof HTTP_STATUS & keyof typeof HTTP_MSG
