@@ -4,6 +4,7 @@ import BaseControlller from "./base-controller.js"
 import logger from "@/core/utils/utils-logger.js"
 import { OTP } from "@/core/utils/utils-constants.js"
 import type { UserWithProfile } from "@/types/user.js"
+import { OtpPurpose } from "@/generated/prisma/enums.js"
 
 export type SendOtpResult = "SENT" | "TOO_SOON" | "FAILED"
 
@@ -55,11 +56,18 @@ abstract class BaseAuthController extends BaseControlller {
    * Enforces the resend cooldown, creates a code, stores its hash, and emails it.
    * If the email fails, the stored code is deleted so the user can retry at once.
    */
-  protected async sendOtp(user: UserWithProfile): Promise<SendOtpResult> {
+
+  protected async sendOtp(
+    user: UserWithProfile,
+    purpose: OtpPurpose,
+  ): Promise<SendOtpResult> {
     const { OtpHasher, Mailer } = this.Utils
     const { Auth } = this.Services
 
-    const latest = await Auth.EmailOtp.FindLatest.call({ userId: user.userId })
+    const latest = await Auth.EmailOtp.FindLatest.call({
+      userId: user.userId,
+      purpose,
+    })
     if (
       latest &&
       Date.now() - latest.createdAt.getTime() < OTP.RESEND_COOLDOWN_MS
@@ -71,16 +79,21 @@ abstract class BaseAuthController extends BaseControlller {
 
     const saved = await Auth.EmailOtp.Replace.call({
       userId: user.userId,
+      purpose,
       codeHash: OtpHasher.hash(code),
       expiresAt: new Date(Date.now() + OTP.TTL_MS),
     })
     if (!saved) return "FAILED"
 
     try {
-      await Mailer.sendOtpEmail(user.email, code, "verification")
+      await Mailer.sendOtpEmail(
+        user.email,
+        code,
+        purpose === "PASSWORD_RESET" ? "password_reset" : "verification",
+      )
     } catch (error) {
-      logger.error({ err: error }, "Failed to send verification email")
-      await Auth.EmailOtp.DeleteByUserId.call({ userId: user.userId })
+      logger.error({ err: error }, "Failed to send otp email")
+      await Auth.EmailOtp.DeleteByUserId.call({ userId: user.userId, purpose })
       return "FAILED"
     }
 

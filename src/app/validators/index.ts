@@ -14,6 +14,10 @@ export type ValidatorTypes = {
       Send: z.infer<typeof Auth.Otp.Send.schema>
       Verify: z.infer<typeof Auth.Otp.Verify.schema>
     }
+    Password: {
+      Forgot: z.infer<typeof Auth.Password.Forgot.schema>
+      Reset: z.infer<typeof Auth.Password.Reset.schema>
+    }
   }
 }
 
