@@ -20,17 +20,9 @@ abstract class BaseAuthController extends BaseControlller {
     }
   }
 
-  /**
-   * Signs both tokens, stores the refresh token hash, and sets the cookies.
-   * Returns false if the refresh token couldn't be saved.
-   */
-  protected async issueSession(
-    res: Response,
-    user: UserWithProfile,
-  ): Promise<boolean> {
-    const { Token, Cookie } = this.Utils
-
-    const accessToken = Token.signAccess({
+  /** Signs an access token for a user. */
+  protected signAccessToken(user: UserWithProfile): string {
+    return this.Utils.Token.signAccess({
       payload: {
         userId: user.userId,
         email: user.email,
@@ -39,9 +31,19 @@ abstract class BaseAuthController extends BaseControlller {
         emailVerified: user.emailVerified,
       },
     })
+  }
+
+  protected async issueSession(
+    res: Response,
+    user: UserWithProfile,
+  ): Promise<boolean> {
+    const { Token, Cookie } = this.Utils
+    const { Auth } = this.Services
+
+    const accessToken = this.signAccessToken(user)
     const refreshToken = Token.signRefresh({ userId: user.userId })
 
-    const saved = await this.Services.Auth.RefreshToken.Save.call({
+    const saved = await Auth.RefreshToken.Save.call({
       userId: user.userId,
       token: Token.hashRefresh(refreshToken),
     })

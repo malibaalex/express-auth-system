@@ -1,3 +1,5 @@
+import LogoutController from "./auth-logout.js"
+import RefreshTokenController from "./auth-refresh.js"
 import Email from "./email/index.js"
 import Otp from "./otp/index.js"
 import Password from "./password/index.js"
@@ -8,6 +10,8 @@ const Auth = {
   Email,
   Otp,
   Password,
+  RefreshToken: new RefreshTokenController(),
+  Logout: new LogoutController(),
 }
 
 export default Auth

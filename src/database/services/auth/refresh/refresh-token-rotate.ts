@@ -1,3 +1,4 @@
+import { env } from "@/core/utils/utils-env.js"
 import BaseService from "@/database/system/base-service.js"
 import type { RefreshToken } from "@/generated/prisma/client.js"
 
@@ -5,7 +6,6 @@ interface SwapRefreshTokenInput {
   userId: string
   oldTokenHash: string
   newTokenHash: string
-  expiresAt: Date
 }
 
 class SwapRefreshTokenService extends BaseService<
@@ -25,7 +25,9 @@ class SwapRefreshTokenService extends BaseService<
         data: {
           userId: data.userId,
           tokenHash: data.newTokenHash,
-          expiresAt: data.expiresAt,
+          expiresAt: new Date(
+            Date.now() + env.JWT_REFRESH_SECRET_KEY_EXPIRES_IN * 1000,
+          ),
         },
       })
     })

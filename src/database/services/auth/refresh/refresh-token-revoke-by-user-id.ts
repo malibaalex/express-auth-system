@@ -1,6 +1,6 @@
 import BaseService from "@/database/system/base-service.js"
 
-class RevokeUserRefreshTokensService extends BaseService<
+class RevokeUserRefreshTokenByUserIdService extends BaseService<
   { userId: string },
   { count: number }
 > {
@@ -15,4 +15,4 @@ class RevokeUserRefreshTokensService extends BaseService<
   }
 }
 
-export default RevokeUserRefreshTokensService
+export default RevokeUserRefreshTokenByUserIdService
