@@ -3,34 +3,22 @@ import BaseAuthController from "@/core/base/controller/base-auth-controller.js"
 import { Request, Response } from "express"
 
 const INVALID = "invalid email or password"
-const USE_GOOGLE =
-  "this account uses Google sign-in. continue with Google, or reset your password to add email login"
 
 class SignInController extends BaseAuthController {
-  // Verifying against this when no real hash exists keeps response time
-  // the same, so timing can't reveal which emails are registered.
   private dummyHash?: Promise<string>
 
   protected async module(req: Request, res: Response): Promise<void> {
-    const { email, password } = req.body as ValidatorTypes["Auth"]["SignUp"]
+    const { email, password } = req.body as ValidatorTypes["Auth"]["SignIn"]
     const { Password } = this.Utils
 
     const user = await this.Services.User.FindByEmail.call({ email })
 
-    // Unknown email: stay generic and keep timing equal to a real check
-    if (!user) {
+    // Unknown email OR Google-only account: same response, same timing.
+    // No OTP is ever sent from login.
+    if (!user || !user.password) {
       this.dummyHash ??= Password.hash("dummy-password-for-timing")
       await Password.verify(await this.dummyHash, password)
       this.respond(res, "UNAUTHORIZED", { message: INVALID })
-      return
-    }
-
-    // Google-only account: no password to check, no OTP sent, clear prompt
-    if (!user.password) {
-      this.respond(res, "UNAUTHORIZED", {
-        message: USE_GOOGLE,
-        data: { code: "USE_GOOGLE" }, // lets the frontend show a Google button
-      })
       return
     }
 
@@ -39,7 +27,7 @@ class SignInController extends BaseAuthController {
       return
     }
 
-    // These are only revealed after the password is proven correct
+    // Only revealed after the password is proven correct
     if (!user.status) {
       this.respond(res, "FORBIDDEN", { message: "account disabled" })
       return
