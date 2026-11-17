@@ -45,6 +45,12 @@ export const ROLES = { ADMIN: "ADMIN", USER: "USER" } as const
 export const PERMISSIONS = {
   USERS_READ: "users:read",
   USERS_WRITE: "users:write",
+  POSTS_READ: "posts:read",
+  POSTS_CREATE: "posts:create",
+  POSTS_UPDATE_OWN: "posts:update:own",
+  POSTS_UPDATE_ANY: "posts:update:any",
+  POSTS_DELETE_OWN: "posts:delete:own",
+  POSTS_DELETE_ANY: "posts:delete:any",
 } as const
 
 export type ResponseKey = keyof typeof HTTP_STATUS & keyof typeof HTTP_MSG

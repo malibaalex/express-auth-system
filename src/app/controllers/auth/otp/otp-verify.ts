@@ -16,14 +16,20 @@ class OtpVerifyController extends BaseAuthController {
       return
     }
 
-    const otp = await Auth.EmailOtp.FindLatest.call({ userId: user.userId })
+    const otp = await Auth.EmailOtp.FindLatest.call({
+      userId: user.userId,
+      purpose: "VERIFY_EMAIL",
+    })
     if (!otp) {
       this.respond(res, "BAD_REQUEST", { message: INVALID })
       return
     }
 
     if (otp.expiresAt < new Date()) {
-      await Auth.EmailOtp.DeleteByUserId.call({ userId: user.userId })
+      await Auth.EmailOtp.DeleteByUserId.call({
+        userId: user.userId,
+        purpose: "VERIFY_EMAIL",
+      })
       this.respond(res, "BAD_REQUEST", { message: INVALID })
       return
     }
@@ -36,7 +42,10 @@ class OtpVerifyController extends BaseAuthController {
       return
     }
     if (counted.attempts > OTP.MAX_ATTEMPTS) {
-      await Auth.EmailOtp.DeleteByUserId.call({ userId: user.userId }) // force a new code
+      await Auth.EmailOtp.DeleteByUserId.call({
+        userId: user.userId,
+        purpose: "VERIFY_EMAIL",
+      }) // force a new code
       this.respond(res, "TOO_MANY_REQUESTS", {
         message: "too many attempts, request a new code",
       })
@@ -57,14 +66,25 @@ class OtpVerifyController extends BaseAuthController {
       this.respond(res, "SERVER_ERROR")
       return
     }
-    await Auth.EmailOtp.DeleteByUserId.call({ userId: user.userId })
+    await Auth.EmailOtp.DeleteByUserId.call({
+      userId: user.userId,
+      purpose: "VERIFY_EMAIL",
+    })
 
     if (!(await this.issueSession(res, verified))) {
       this.respond(res, "SERVER_ERROR")
       return
     }
 
-    this.respond(res, "SUCCESS", { data: { user: this.publicUser(verified) } })
+    const access = await this.loadAccess(user) // verify: use `verified`
+    if (!access) {
+      this.respond(res, "SERVER_ERROR")
+      return
+    }
+
+    this.respond(res, "SUCCESS", {
+      data: { user: this.publicUser(verified, access) },
+    })
   }
 }
 

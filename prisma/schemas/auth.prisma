@@ -17,6 +17,7 @@ model User {
     refreshTokens RefreshToken[] // App's native session refresh tokens
     otps          EmailOtp[] // Numeric OTP verification tracking
     userRoles     UserRole[]
+    posts         Post[]
 
     @@map("users")
 }

@@ -1,6 +1,7 @@
 import "pino-http"
 import { NextFunction, Request, Response, Router } from "express"
 import { Access, UserWithProfile } from "./user.js"
+import { Post } from "@/generated/prisma/client.ts"
 
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete"
 
@@ -31,6 +32,7 @@ declare global {
     interface Request {
       currentUser?: UserWithProfile
       access?: Access
+      post?: Post
     }
   }
 }
