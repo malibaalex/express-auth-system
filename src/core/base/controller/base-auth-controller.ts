@@ -23,7 +23,7 @@ abstract class BaseAuthController extends BaseControlller {
   }
 
   protected async loadAccess(user: UserWithProfile): Promise<Access | null> {
-    const userRoles = await this.Services.Authz.Role.User.FindByUserId.call({
+    const userRoles = await this.Services.Authz.UserRole.FindByUserId.call({
       userId: user.userId,
     })
     return userRoles ? this.Utils.Access.from(userRoles) : null
@@ -46,7 +46,7 @@ abstract class BaseAuthController extends BaseControlller {
       return
     }
 
-    await Authz.Role.User.Assign.call({ userId: user.userId, roleId: role.id })
+    await Authz.UserRole.Assign.call({ userId: user.userId, roleId: role.id })
   }
 
   /** Signs an access token for a user. */

@@ -10,7 +10,7 @@ class OtpSendController extends BaseAuthController {
 
     // Only pending, enabled accounts get a code
     if (user && !user.emailVerified && user.status) {
-      await this.sendOtp(user) // TOO_SOON and FAILED are intentionally silent
+      await this.sendOtp(user, "VERIFY_EMAIL") // TOO_SOON and FAILED are intentionally silent
     }
 
     // Same answer whether or not the account exists, so this endpoint
