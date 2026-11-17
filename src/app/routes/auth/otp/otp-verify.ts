@@ -3,10 +3,10 @@ import Validators from "@/app/validators/index.js"
 import BaseRoute from "@/core/base/base-route.js"
 
 class OtpVerifyRoute extends BaseRoute {
-  constructor() {
-    super("/auth", {
+  constructor(path: string) {
+    super(path, {
       method: "post",
-      route: "/otp/verify",
+      route: "/verify",
       rateLimit: { limit: 10, minutes: 10 },
       validators: [Validators.Auth.Otp.Verify],
       controller: Controllers.Auth.Otp.Verify,

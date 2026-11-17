@@ -1,0 +1,90 @@
+name: AUTH_SYSTEM_TEST
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d test_db"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      NODE_ENV: test
+      PORT: 0
+
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: test_db
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db?schema=public
+
+      GOOGLE_CLIENT_ID: test-google-client-id
+      GOOGLE_CLIENT_SECRET: test-google-client-secret
+      GOOGLE_CALLBACK_URL: http://localhost:3000/auth/google/callback
+      GOOGLE_START_PATH: /auth/google/start
+      APP_URL: http://localhost:3000
+
+      RESEND_API_KEY: test-resend-api-key
+      EMAIL_FROM: onboarding@example.com
+
+      JWT_ACCESS_SECRET_KEY: test-access-secret
+      JWT_ACCESS_SECRET_KEY_EXPIRES_IN: 900
+      JWT_REFRESH_SECRET_KEY: test-refresh-secret
+      JWT_REFRESH_SECRET_KEY_EXPIRES_IN: 604800
+
+      COOKIE_SECRET: test-cookie-secret
+
+      SEED_ADMIN_EMAIL: admin@example.com
+      SEED_ADMIN_NAME: Test Admin
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: 26
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma client
+        run: pnpm prisma:generate
+
+      - name: Run database migrations
+        run: pnpm prisma:deploy
+
+      - name: Seed database
+        run: pnpm prisma:seed
+
+      - name: Run tests
+        run: pnpm test

@@ -2,6 +2,7 @@ import LogoutRoute from "./auth-logout.js"
 import MeRoute from "./auth-me.js"
 import RefreshTokenRoute from "./auth-refresh-token.js"
 import Email from "./email/index.js"
+import Otp from "./otp/index.js"
 import Password from "./password/index.js"
 import Provider from "./provider/index.js"
 
@@ -12,6 +13,8 @@ const Auth = {
   GoogleRedirect: Provider.Google.Redirect,
   SignUp: Email.SignUp,
   SignIn: Email.SignIn,
+  OtpSend: Otp.Send,
+  OtpVerify: Otp.Verify,
   PasswordForgot: Password.Forgot,
   PasswordReset: Password.Reset,
   RefreshToken: new RefreshTokenRoute(path),

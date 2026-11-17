@@ -35,7 +35,7 @@ class UserAuth extends BaseMiddleWare {
       return
     }
 
-    const userRoles = await Authz.Role.User.FindByUserId.call({
+    const userRoles = await Authz.UserRole.FindByUserId.call({
       userId: user.userId,
     })
     if (!userRoles) {

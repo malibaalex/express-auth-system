@@ -11,7 +11,9 @@ class GoogleCallbackController extends BaseAuthController {
   protected async module(req: Request, res: Response): Promise<void> {
     // The user pressed "Cancel" on Google's consent screen
     if (typeof req.query.error === "string") {
-      this.respond(res, "UNAUTHORIZED", { message: "google sign-in cancelled" })
+      this.respond(res, "UNAUTHORIZED", {
+        message: "google sign-in cancelled",
+      })
       return
     }
 
