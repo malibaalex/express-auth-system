@@ -45,7 +45,7 @@ jobs:
       GOOGLE_CLIENT_ID: test-google-client-id
       GOOGLE_CLIENT_SECRET: test-google-client-secret
       GOOGLE_CALLBACK_URL: http://localhost:3000/auth/google/callback
-      GOOGLE_START_PATH: /auth/google/start
+      GOOGLE_REDIRECT_PATH: "/api/auth/google/redirect"
       APP_URL: http://localhost:3000
 
       RESEND_API_KEY: test-resend-api-key
