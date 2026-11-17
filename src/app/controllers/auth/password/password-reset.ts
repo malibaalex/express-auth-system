@@ -74,7 +74,7 @@ class PasswordResetController extends BaseAuthController {
     })
 
     // Log out every device: anyone holding an old session loses it.
-    await Auth.RefreshToken.Revoke.call({ userId: user.userId })
+    await Auth.RefreshToken.RevokeByUserId.call({ userId: user.userId })
     this.Utils.Cookie.clearAuthCookies(res)
 
     this.respond(res, "SUCCESS", {

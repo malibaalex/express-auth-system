@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from "express"
-import { z } from "zod"
 import BaseMiddleWare from "@/core/base/base-middleware.js"
 
 class ProfileUpdateValidator extends BaseMiddleWare {

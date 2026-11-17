@@ -8,9 +8,10 @@ const path = "/posts"
 
 const Post = {
   Create: new PostCreateRoute(path),
+  List: new PostListRoute(path),
+
   Update: new PostUpdateRoute(path),
   Get: new PostGetRoute(path),
-  List: new PostListRoute(path),
   Delete: new PostDeleteRoute(path),
 }
 

@@ -8,7 +8,7 @@ class PostCreateRoute extends BaseRoute {
   constructor(path: string) {
     super(path, {
       method: "post",
-      route: "",
+      route: "/create",
       rateLimit: { limit: 20, minutes: 5 },
       validators: [Validators.Post.Create],
       middlewares: [

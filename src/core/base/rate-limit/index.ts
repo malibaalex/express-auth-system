@@ -12,8 +12,14 @@ const RateLimit = {
    *   - `message`: Custom error message
    *   - `keyGenerator`: Custom key generator function
    */
-  create: (options: ConstructorParameters<typeof RateLimiter>[0]) =>
-    new RateLimiter(options).middleware,
+  create: (options: ConstructorParameters<typeof RateLimiter>[0]) => {
+    const limiter = new RateLimiter(options)
+
+    return {
+      middleware: limiter.middleware,
+      destroy: () => limiter.destroy(),
+    }
+  },
 }
 
 export default RateLimit

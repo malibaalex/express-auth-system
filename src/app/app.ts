@@ -14,6 +14,7 @@ import logger from "@/core/utils/utils-logger.js"
 import { IRoute } from "@/types/app.js"
 import path from "path"
 import ErrorHandler from "./middlewares/middleware-error-handler.js"
+import { env } from "@/core/utils/utils-env.js"
 
 type RouteInput = IRoute | Router | { router: Router } | Record<string, unknown>
 
@@ -34,7 +35,9 @@ class App extends Base {
     this.app.use(express.static(path.join(process.cwd(), "public")))
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
-    this.app.use(cookieParser())
+
+    const cookieSecret = env.COOKIE_SECRET
+    this.app.use(cookieParser(cookieSecret))
 
     // Type-safe handling of pino-http interop default/namespace export
     const httpLogger =
