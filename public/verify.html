@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Verify your email · Atlas</title>
+    <link rel="stylesheet" href="/app/css/style.css" />
+  </head>
+  <body>
+    <main class="auth-shell">
+      <section class="auth-card" aria-labelledby="page-title">
+        <a class="brand" href="/app/" aria-label="Atlas home"
+          ><span class="brand-mark" aria-hidden="true">A</span
+          ><span>Atlas</span></a
+        >
+        <p class="eyebrow">EMAIL VERIFICATION</p>
+        <h1 id="page-title">Check your inbox</h1>
+        <p class="muted">
+          Enter the six-digit code we sent to your email address to activate
+          your account.
+        </p>
+        <div
+          id="notice"
+          class="notice"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <form id="verify-form" class="form">
+          <label for="email"
+            >Email address<input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              maxlength="254"
+              placeholder="you@example.com"
+          /></label>
+          <label for="code"
+            >Verification code<input
+              id="code"
+              name="code"
+              type="text"
+              inputmode="numeric"
+              autocomplete="one-time-code"
+              pattern="[0-9]{6}"
+              minlength="6"
+              maxlength="6"
+              required
+              placeholder="Six-digit code"
+          /></label>
+          <button class="button primary" type="submit">Verify email</button>
+        </form>
+        <form id="resend-form" class="inline-form">
+          <input name="email" type="hidden" /><button
+            class="text-button"
+            type="submit"
+          >
+            Resend verification code
+          </button>
+        </form>
+        <p class="footnote"><a href="/app/">Back to sign in</a></p>
+      </section>
+    </main>
+    <script type="module" src="/app/js/verify.js"></script>
+  </body>
+</html>

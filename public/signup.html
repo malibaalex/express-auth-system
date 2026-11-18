@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f6f3" />
+    <title>Create account · Atlas</title>
+    <link rel="stylesheet" href="/app/css/style.css" />
+  </head>
+  <body>
+    <main class="auth-shell">
+      <section class="auth-card" aria-labelledby="page-title">
+        <a class="brand" href="/app/" aria-label="Atlas home"
+          ><span class="brand-mark" aria-hidden="true">A</span
+          ><span>Atlas</span></a
+        >
+        <p class="eyebrow">CREATE YOUR ACCOUNT</p>
+        <h1 id="page-title">Join Atlas</h1>
+        <p class="muted">
+          Create an account to write and manage your posts. We'll email you a
+          verification code.
+        </p>
+        <div
+          id="notice"
+          class="notice"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <form id="signup-form" class="form">
+          <label for="fullName"
+            >Full name <span class="muted inline">Optional</span
+            ><input
+              id="fullName"
+              name="fullName"
+              type="text"
+              autocomplete="name"
+              maxlength="120"
+              placeholder="Your name"
+          /></label>
+          <label for="email"
+            >Email address<input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              maxlength="254"
+              placeholder="you@example.com"
+          /></label>
+          <label for="password"
+            >Password<input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="new-password"
+              required
+              minlength="8"
+              maxlength="128"
+              placeholder="At least 8 characters"
+          /></label>
+          <p class="hint">
+            Use 8–128 characters. You'll verify your email before your first
+            sign-in.
+          </p>
+          <button class="button primary" type="submit">Create account</button>
+        </form>
+        <p class="footnote">
+          Already have an account? <a href="/app/">Sign in</a>
+        </p>
+      </section>
+    </main>
+    <script type="module" src="/app/js/signup.js"></script>
+  </body>
+</html>

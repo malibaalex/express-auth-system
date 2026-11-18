@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Post · Atlas</title>
+    <link rel="stylesheet" href="/app/css/style.css" />
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <a class="brand" href="/app/app.html"
+          ><span class="brand-mark" aria-hidden="true">A</span
+          ><span>Atlas</span></a
+        >
+        <nav class="topnav" aria-label="Main navigation">
+          <a class="nav-link" href="/app/posts.html">Posts</a
+          ><a class="nav-link" href="/app/app.html">Account</a
+          ><button id="logout" class="button secondary small" type="button">
+            Sign out
+          </button>
+        </nav>
+      </header>
+      <div
+        id="notice"
+        class="notice"
+        role="status"
+        aria-live="polite"
+        hidden
+      ></div>
+      <article id="post-detail" class="post-detail" aria-live="polite">
+        <div class="empty-state">
+          <span class="loading-dot" aria-hidden="true"></span>
+          <p>Loading post…</p>
+        </div>
+      </article>
+    </main>
+    <script type="module" src="/app/js/post.js"></script>
+  </body>
+</html>

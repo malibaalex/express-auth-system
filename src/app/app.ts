@@ -32,7 +32,7 @@ class App extends Base {
   }
 
   private initMiddlewares(): void {
-    this.app.use(express.static(path.join(process.cwd(), "public")))
+    this.app.use("/app", express.static(path.join(process.cwd(), "public")))
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
 

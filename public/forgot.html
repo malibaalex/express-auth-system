@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f6f3" />
+    <title>Recover your account · Atlas</title>
+    <link rel="stylesheet" href="/app/css/style.css" />
+  </head>
+  <body>
+    <main class="auth-shell">
+      <section class="auth-card" aria-labelledby="page-title">
+        <a class="brand" href="/app/" aria-label="Atlas sign in"
+          ><span class="brand-mark" aria-hidden="true">A</span
+          ><span>Atlas</span></a
+        >
+        <p class="eyebrow">ACCOUNT RECOVERY</p>
+        <h1 id="page-title">Reset your password</h1>
+        <p class="muted">
+          Enter the email address on your account. If an eligible account
+          exists, we'll send a six-digit reset code.
+        </p>
+        <div
+          id="notice"
+          class="notice"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <form id="forgot-form" class="form">
+          <label for="email"
+            >Email address<input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              maxlength="254"
+              placeholder="you@example.com"
+          /></label>
+          <button class="button primary" type="submit">Send reset code</button>
+        </form>
+        <a
+          id="continue-reset"
+          class="button primary continue-button"
+          href="/app/reset.html"
+          hidden
+          >Enter reset code</a
+        >
+        <p class="footnote">
+          Remembered your password? <a href="/app/">Back to sign in</a>
+        </p>
+      </section>
+      <p class="legal">
+        For your security, we use the same confirmation whether or not an
+        account exists
+      </p>
+    </main>
+    <script type="module" src="/app/js/forgot.js"></script>
+  </body>
+</html>

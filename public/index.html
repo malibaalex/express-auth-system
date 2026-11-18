@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f5f6f3" />
+    <title>Sign in · Atlas</title>
+    <link rel="stylesheet" href="/app/css/style.css" />
+  </head>
+  <body>
+    <main class="auth-shell">
+      <section class="auth-card" aria-labelledby="page-title">
+        <a class="brand" href="/app/" aria-label="Atlas home"
+          ><span class="brand-mark" aria-hidden="true">A</span
+          ><span>Atlas</span></a
+        >
+        <p class="eyebrow">YOUR WRITING WORKSPACE</p>
+        <h1 id="page-title">Sign in</h1>
+        <p class="muted">Continue to your posts and account.</p>
+        <div
+          id="notice"
+          class="notice"
+          role="status"
+          aria-live="polite"
+          hidden
+        ></div>
+        <form id="login-form" class="form">
+          <label for="email"
+            >Email address<input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              maxlength="254"
+              placeholder="you@example.com"
+          /></label>
+          <label for="password"
+            >Password<input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              minlength="8"
+              maxlength="128"
+              placeholder="Your password"
+          /></label>
+          <div class="form-row end">
+            <a href="/app/forgot.html">Forgot password?</a>
+          </div>
+          <button class="button primary" type="submit">Sign in</button>
+        </form>
+        <div class="separator"><span>or</span></div>
+        <a class="button secondary google" href="/api/auth/google/redirect"
+          ><span class="google-g" aria-hidden="true">G</span> Continue with
+          Google</a
+        >
+        <p class="footnote">
+          New to Atlas? <a href="/app/signup.html">Create an account</a>
+        </p>
+        <p class="footnote compact-footnote">
+          Need to verify your email?
+          <a href="/app/verify.html">Enter a verification code</a>
+        </p>
+      </section>
+      <p class="legal">
+        Your session is protected with secure, HttpOnly cookies
+      </p>
+    </main>
+    <script type="module" src="/app/js/login.js"></script>
+  </body>
+</html>
