@@ -65,7 +65,7 @@ Follow step 9 in [adding-endpoints.md](./adding-endpoints.md). Rules that matter
 |---|---|
 | `ci.yml` | `pnpm check` and `pnpm build` |
 | `test.yml` | PostgreSQL 17 service, `prisma:deploy`, `prisma:seed`, `pnpm test` |
-| `security.yml` | `pnpm audit` (also weekly) |
+| `security.yml` | `pnpm audit --prod` (blocking) and a full audit (informational, known `picomatch` advisory in dev tooling), also weekly |
 
 ## Next
 
