@@ -165,3 +165,4 @@ Run `pnpm check` (lint, format check and typecheck). CI runs the same check, the
 - [architecture.md](./architecture.md) for how the pieces fit together
 - [adding-endpoints.md](./adding-endpoints.md) to extend the API
 - [testing.md](./testing.md) for how the tests work
+- [deployment.md](./deployment.md) for how to deploy

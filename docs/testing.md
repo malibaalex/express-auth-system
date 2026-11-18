@@ -66,3 +66,8 @@ Follow step 9 in [adding-endpoints.md](./adding-endpoints.md). Rules that matter
 | `ci.yml` | `pnpm check` and `pnpm build` |
 | `test.yml` | PostgreSQL 17 service, `prisma:deploy`, `prisma:seed`, `pnpm test` |
 | `security.yml` | `pnpm audit` (also weekly) |
+
+## Next
+
+- [adding-endpoints.md](./adding-endpoints.md) for the full endpoint checklist, including the test step
+- [api-reference.md](./api-reference.md) for the status codes each endpoint should return

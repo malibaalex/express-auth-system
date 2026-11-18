@@ -155,3 +155,8 @@ Roles bundle permissions named `resource:action`. Routes check permissions, not 
 |---|---|---|
 | Services do one data operation and nothing else | Logic lives in one layer, services stay trivially testable and reusable | More files, and controllers carry the orchestration |
 | `BaseService.call()` returns `null` on any error | Controllers handle one
+
+## Next
+
+- [adding-endpoints.md](./adding-endpoints.md) to extend the API
+- [testing.md](./testing.md) for how the tests work

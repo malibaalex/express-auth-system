@@ -7,3 +7,8 @@ Follow the official Express guidance:
 - [Express behind proxies](https://expressjs.com/en/guide/behind-proxies.html)
 
 Project-specific notes are already covered elsewhere: environment variables and `prisma:deploy` in [getting-started.md](./getting-started.md), and single-instance and cookie limits in [architecture.md](./architecture.md#known-limitations).
+
+## Next
+
+- [getting-started.md](./getting-started.md) for environment variables
+- [architecture.md](./architecture.md#known-limitations) for single-instance and cookie limits

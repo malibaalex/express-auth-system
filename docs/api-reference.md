@@ -356,3 +356,9 @@ curl -b cookies.txt http://localhost:4001/api/auth/me
 ```
 
 The refresh cookie is only sent to paths under `/api/auth`, so `-b cookies.txt` works for both.
+
+## Next
+
+- [adding-endpoints.md](./adding-endpoints.md) to add an endpoint
+- [architecture.md](./architecture.md) for how requests flow through the system
+- [testing.md](./testing.md) to test an endpoint
