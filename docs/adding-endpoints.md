@@ -248,6 +248,6 @@ pnpm test
 
 ## Next
 
-- [architecture.md](./architecture.md) for why the layers are split this way
+- [architecture.md](./archicteture.md) for why the layers are split this way
 - [testing.md](./testing.md) for the test setup and helpers
 - [api-reference.md](./api-reference.md) to document the new endpoint
