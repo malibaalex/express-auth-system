@@ -61,7 +61,7 @@ They are validated at startup in `src/core/utils/utils-env.ts`, so the app refus
 | `GOOGLE_CLIENT_ID` | | From the Google Cloud console |
 | `GOOGLE_CLIENT_SECRET` | | From the Google Cloud console |
 | `GOOGLE_CALLBACK_URL` | `http://localhost:4001/api/auth/google/callback` | Must exactly match a redirect URI registered in Google |
-| `GOOGLE_START_PATH` | `/api/auth/google/redirect` | Required by the env schema |
+| `GOOGLE_REDIRECT_PATH` | `/api/auth/google/redirect` | Required by the env schema |
 | `RESEND_API_KEY` | | From resend.com |
 | `EMAIL_FROM` | `onboarding@resend.dev` | Must be a valid address allowed by your Resend account |
 
