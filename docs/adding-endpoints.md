@@ -8,7 +8,7 @@ Every endpoint is the same few files, each in its own folder with a registry `in
 |---|---|---|---|
 | 1 | Schema change and migration | `prisma/schemas/*.prisma` | No new data |
 | 2 | Service | `src/database/services/<domain>/` | An existing service already does the query |
-| 3 | Validator | `src/app/validators/<domain>/` | The request has no input |
+| 3 | Validator | `src/app/validators/<domain>/` | The request has no input, or an existing validator fits |
 | 4 | Middleware | `src/app/middlewares/` | Existing ones cover the checks |
 | 5 | Controller | `src/app/controllers/<domain>/` | Never |
 | 6 | Route | `src/app/routes/<domain>/` | Never |
@@ -26,6 +26,7 @@ Every endpoint is the same few files, each in its own folder with a registry `in
 - **Never trust the client for identity.** Take the user ID from `req.currentUser`, never from the body or URL.
 - **Never return `req.currentUser` directly.** It contains the password hash. In auth controllers use `publicUser(user, access)`.
 - **Normalize in validators.** Emails are trimmed and lowercased there, and services match them exactly.
+- **Validator types come from the registry.** Controllers import `ValidatorTypes` from `validators/index.ts`, never a per-file type.
 
 ## Worked example: `GET /api/posts/mine`
 
@@ -87,34 +88,46 @@ const Post = {
 
 ### 3. Validator
 
-The existing list validator already parses `page` and `pageSize`, so reuse it. For new input, create a class that wraps a Zod schema with `bodyHandler`, `paramHandler` or `queryHandler`:
+The existing `Validators.Post.List` already parses `page` and `pageSize`, so this example reuses it. For new input, create a class with a public `schema` and wrap it with `bodyHandler`, `paramHandler` or `queryHandler`:
 
 ```ts
-// src/app/validators/post/post-create.ts (pattern)
+// src/app/validators/post/post-create.ts
 import { NextFunction, Request, Response } from "express"
-import { z } from "zod"
 import BaseMiddleWare from "@/core/base/base-middleware.js"
 
-const schema = z.object({
-  title: z.string().trim().min(1, "title is required").max(150),
-})
-
-export type PostCreateBody = z.infer<typeof schema>
-
 class PostCreateValidator extends BaseMiddleWare {
+  schema = this.z.object({
+    title: this.z.string().trim().min(1, "title is required").max(150),
+    content: this.z.string().trim().min(1, "content is required").max(10_000),
+  })
+
   protected middleware(req: Request, res: Response, next: NextFunction): void {
-    this.bodyHandler(req, res, next, schema)
+    this.bodyHandler(req, res, next, this.schema)
   }
 }
 
 export default PostCreateValidator
 ```
 
-Zod strips unknown keys by default, which stops a client from sending fields like `authorId`. Register the class in the folder's `index.ts` under `Validators`.
+Zod strips unknown keys by default, which stops a client from sending fields like `authorId`.
+
+Register a new validator in two places:
+
+1. The domain `index.ts` (`Post = { Create: new PostCreateValidator(), ... }`).
+2. `ValidatorTypes` in `src/app/validators/index.ts`, so controllers get its type:
+
+```ts
+export type ValidatorTypes = {
+  Post: {
+    Create: z.infer<typeof Post.Create.schema>
+    // ...
+  }
+}
+```
 
 ### 4. Middleware
 
-Not needed here. The route uses `Authenticate` and a permission check. If a route needs a rule that isn't a plain permission (for example ownership of another resource), write a middleware class like `PostWriteAccess` and register it under `Middlewares`.
+Not needed here. The route uses `Middlewares.Auth.User` (authenticates the user) and a permission check. If a route needs a rule that isn't a plain permission (for example ownership of another resource), write a middleware class like `PostWriteAccess` and register it under `Middlewares`.
 
 ### 5. Controller
 
@@ -122,14 +135,16 @@ Not needed here. The route uses `Authenticate` and a permission check. If a rout
 // src/app/controllers/post/post-list-mine.ts
 import { Request, Response } from "express"
 import BaseController from "@/core/base/controller/base-controller.js"
-import type { PostListQuery } from "@/app/validators/post/post-list.js"
+import type { ValidatorTypes } from "@/app/validators/index.js"
+
+type Query = ValidatorTypes["Post"]["List"]
 
 class PostListMineController extends BaseController {
   protected async module(req: Request, res: Response): Promise<void> {
-    const { page, pageSize } = req.query as unknown as PostListQuery
+    const { page, pageSize } = req.query as unknown as Query
 
     const result = await this.Services.Post.ListByAuthor.call({
-      authorId: req.currentUser!.userId, // Authenticate guarantees it, never read from the client
+      authorId: req.currentUser!.userId, // set by Middlewares.Auth.User, never read from the client
       page,
       pageSize,
     })
@@ -147,13 +162,15 @@ class PostListMineController extends BaseController {
 export default PostListMineController
 ```
 
-Register it in `src/app/controllers/post/index.ts` as `Controllers.Post.ListMine`.
+Register it in `src/app/controllers/post/index.ts` as `Controllers.Post.ListMine`. For a body, use `req.body as ValidatorTypes["Post"]["Create"]`.
 
 Use `respond(res, key, { message?, data? })`. Available keys: `SUCCESS`, `CREATED`, `BAD_REQUEST`, `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `TOO_MANY_REQUESTS`, `SERVER_ERROR`. Add a key to `HTTP_STATUS` and `HTTP_MSG` if you need another status.
 
 If the controller issues sessions, sends OTPs or returns a user, extend `BaseAuthController`. It provides `issueSession`, `sendOtp`, `publicUser`, `loadAccess` and `assignDefaultRole`.
 
 ### 6. Route
+
+A route receives its base path from the constructor. The path is defined once, in the folder's `index.ts`.
 
 ```ts
 // src/app/routes/post/post-list-mine.ts
@@ -164,14 +181,14 @@ import BaseRoute from "@/core/base/base-route.js"
 import { PERMISSIONS } from "@/core/utils/utils-constants.js"
 
 class PostListMineRoute extends BaseRoute {
-  constructor() {
-    super("/posts", {
+  constructor(path: string) {
+    super(path, {
       method: "get",
       route: "/mine",
       rateLimit: { limit: 60, minutes: 5 },
       validators: [Validators.Post.List],
       middlewares: [
-        Middlewares.Auth.Authenticate,
+        Middlewares.Auth.User,
         Middlewares.Authz.Permission(PERMISSIONS.POSTS_READ),
       ],
       controller: Controllers.Post.ListMine,
@@ -182,13 +199,29 @@ class PostListMineRoute extends BaseRoute {
 export default PostListMineRoute
 ```
 
-**Pipeline order is fixed:** rate limit, validators, middlewares, controller. Inside `middlewares`, array order matters, so `Authenticate` must come before anything that reads `req.currentUser` or `req.access`.
+**Pipeline order is fixed:** rate limit, validators, middlewares, controller. Inside `middlewares`, array order matters, so `Middlewares.Auth.User` must come before anything that reads `req.currentUser` or `req.access`.
 
-**Rate limits:** pass `{ limit, minutes }`, and omit `message` to get the default text (an empty string produces a blank 429). The default key is IP plus `req.body.email`. Pass `keyGenerator` for anything else.
+**Rate limits:** pass `{ limit, minutes }`. `message` is optional. Omit it to get the default text, or pass your own. Don't pass an empty string, it produces a blank 429. The default key is IP plus `req.body.email`. Pass `keyGenerator` for anything else.
 
 ### 7. Register and mount
 
-Add the route to `src/app/routes/post/index.ts`, then make sure it is mounted in `src/app/routes/index.ts`.
+Add the route to the domain's `index.ts`, which sets the path once:
+
+```ts
+// src/app/routes/post/index.ts
+const path = "/posts"
+
+const Post = {
+  Create: new PostCreateRoute(path),
+  List: new PostListRoute(path),
+  ListMine: new PostListMineRoute(path), // before Get
+  Update: new PostUpdateRoute(path),
+  Get: new PostGetRoute(path),
+  Delete: new PostDeleteRoute(path),
+}
+```
+
+Then make sure the domain is mounted in `src/app/routes/index.ts`.
 
 > **Order matters.** Express matches in registration order. `GET /posts/mine` must be registered **before** `GET /posts/:id`, or `mine` is captured as an `id` and fails UUID validation with a 400. Put static paths first and parameterized paths after.
 
