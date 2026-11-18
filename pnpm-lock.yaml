@@ -196,9 +196,6 @@ importers:
       jsonwebtoken:
         specifier: ^9.0.3
         version: 9.0.3
-      nodemon:
-        specifier: ^3.1.14
-        version: 3.1.14
       passport:
         specifier: ^0.7.0
         version: 0.7.0
@@ -254,6 +251,9 @@ importers:
       eslint-config-prettier:
         specifier: ^10.1.8
         version: 10.1.8(eslint@10.15.0(jiti@2.7.0)(supports-color@5.5.0))
+      nodemon:
+        specifier: ^3.1.14
+        version: 3.1.14
       pino-pretty:
         specifier: ^13.2.0
         version: 13.2.0
